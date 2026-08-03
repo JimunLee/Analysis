@@ -235,15 +235,11 @@ void DrawBW()
 
   TF1* fkstar [nPtBins];
   TF1* fBg [nPtBins];
-  TF1* fBg2 [nPtBins];
   TF1* fFit [nPtBins];
-  TF1* fBg_POST [nPtBins];
-  TF1* fkstar_POST [nPtBins];
-  TF1* gausbg [nPtBins];
-  TF1* f0bg [nPtBins];
+
   TF1* pol3bg [nPtBins];
   TF1* bw [nPtBins];
-  TF1* totbg [nPtBins];
+  TF1* pol3bg_err [nPtBins];
 
   double kstarMass = 0.890;
   double kstarWidth = 0.0524;
@@ -280,7 +276,7 @@ void DrawBW()
       
       fFit[i]->SetParameter(0, fkstar[i]->GetParameter(0)); //DO NOT FIX
       fFit[i]->SetParameter(1, fkstar[i]->GetParameter(1));
-      fFit[i]->FixParameter(2, fkstar[i]->GetParameter(2));
+      fFit[i]->SetParameter(2, fkstar[i]->GetParameter(2));
 
       fFit[i]->SetParameter(3, fBg[i]->GetParameter(0));
       fFit[i]->SetParameter(4, fBg[i]->GetParameter(1));
@@ -295,15 +291,23 @@ void DrawBW()
       pol3bg[i] = new TF1(Form("pol3bg_%i",i), "pol3(0)", BgMinRange, BgMaxRange);
       bw[i] = new TF1(Form("bw_%i",i), "[0]*BreitWignerRelativistic(x, [1], [2])", BgMinRange, BgMaxRange);
 
+      pol3bg_err[i] = new TF1(Form("pol3bgerr_%i",i), "pol3(0)", BgMinRange, BgMaxRange);
+
       bw[i]->FixParameter(0, fFit[i]->GetParameter(0));
       bw[i]->FixParameter(1, fFit[i]->GetParameter(1));
       bw[i]->FixParameter(2, fFit[i]->GetParameter(2));
-      
+      // for drawing Bg
       pol3bg[i]->FixParameter(0, fFit[i]->GetParameter(3));
       pol3bg[i]->FixParameter(1, fFit[i]->GetParameter(4));
       pol3bg[i]->FixParameter(2, fFit[i]->GetParameter(5));
       pol3bg[i]->FixParameter(3, fFit[i]->GetParameter(6));
+      // for calculating uncertainty of Bg
+      pol3bg_err[i]->SetParameter(0, fFit[i]->GetParameter(3));
+      pol3bg_err[i]->SetParameter(1, fFit[i]->GetParameter(4));
+      pol3bg_err[i]->SetParameter(2, fFit[i]->GetParameter(5));
+      pol3bg_err[i]->SetParameter(3, fFit[i]->GetParameter(6));
 
+      
       TFitResultPtr ptr = hUSSFit[i]->Fit(fFit[i], "SR0", "", BgMinRange, BgMaxRange);
       double Chi2 = ptr->Chi2();
       int NDF = ptr->Ndf();
@@ -352,17 +356,16 @@ void DrawBW()
       double HistYerr = 0;
       double lowM = hUSSFit[i]->FindBin(BgMinRange);
       double highM = hUSSFit[i]->FindBin(BgMaxRange);
-      HistY=hUSSFit[i]->IntegralAndError(lowM, highM, HistYerr);
-      double binW = hUSSFit[i]->GetBinWidth(50); //Any bin number
-      double BgY = (1/binW)*pol3bg[i]->Integral(BgMinRange, BgMaxRange);
-	
-      TMatrixDSym covTot(fFit[i]->GetNpar());
-      TMatrixDSym covGG(bw[i]->GetNpar());
-      TMatrixDSym covGG_err(pol3bg[i]->GetNpar());
-      covTot = ptr->GetCovarianceMatrix();
-      covGG_err = covTot.GetSub(0, 3, 0, 3);// these have to be pol3bg parameters
+      HistY = hUSSFit[i]->IntegralAndError(lowM, highM, HistYerr);
+      
+      double binW = hUSSFit[i]->GetBinWidth(30); //Any bin number
+      double BgY = (1/binW)*pol3bg_err[i]->Integral(BgMinRange, BgMaxRange);
 
-      Double_t Bg_err = (1/binW)*pol3bg[i]->IntegralError(BgMinRange, BgMaxRange, pol3bg[i]->GetParameters(), covGG_err.GetMatrixArray());
+      TMatrixDSym covTot(fFit[i]->GetNpar());
+      TMatrixDSym covBG(pol3bg[i]->GetNpar());
+      covTot = ptr->GetCovarianceMatrix();
+      covBG = covTot.GetSub(3, 6, 3, 6);
+      Double_t Bg_err = (1/binW)*pol3bg_err[i]->IntegralError(BgMinRange, BgMaxRange, pol3bg_err[i]->GetParameters(), covBG.GetMatrixArray());
 	 
       double HistCorrY = HistY-BgY;
       double HistCorrYerr = TMath::Sqrt(HistYerr*HistYerr + Bg_err*Bg_err);
@@ -370,14 +373,23 @@ void DrawBW()
       hYield->SetBinContent(i+1, HistCorrY);
       hYield->SetBinContent(i+1, hYield->GetBinContent(i+1)/hYield->GetBinWidth(i+1));
       hYield->SetBinError(i+1, HistCorrYerr);
-  
+
+      std::cout << "====================================" << std::endl;
+      std::cout << "HistY: " << HistY << std::endl;
+      std::cout << "BgY: " << BgY << std::endl;
+      std::cout << "HistCorrY: " << HistCorrY << std::endl;
+      std::cout << "------------------------" << std::endl;
+      std::cout << "HistYerr: " << HistYerr << std::endl;
+      std::cout << "Bg_err: " << Bg_err << std::endl;
+      std::cout << "HistCorrYerr: " << HistCorrYerr << std::endl;
+      std::cout << "====================================" << std::endl;
+      
       nEvents = hCent->GetBinContent(3);    
     }//for i
   
   TFile* fout = TFile::Open("../kstar-in-jets/Results_draw/UncorrectedpTspectra_MB.root", "RECREATE");
   fout->cd();
   hCent->Write("nEvents");
-  
   hYield->Write("BC_spectra");
   
   hYield->Scale(1/nEvents);
