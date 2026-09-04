@@ -84,7 +84,7 @@ void DrawBW(TString Kind, TString USS, TString LSS)
     Double_t inside_xBins[nPtBins+1] = {0.5, 1.0, 1.5, 2.0, 2.5, 3.5, 5.0, 8.0};
     copy(begin(inside_xBins), end(inside_xBins), xBins);
 
-    SpecialLatex_fit = DrawTLatex(0.558, 0.785, "#Delta R_{ jet}^{ K*} < 0.4", 0.04, 42, 1);
+    SpecialLatex_fit = DrawTLatex(0.558, 0.785, "#Delta #it{R}_{ jet}^{ K*} < 0.4", 0.04, 42, 1);
     SpecialLatex_fit2 = DrawTLatex(0.558, 0.630, "#it{p}_{T}^{ Jet ch uncorr} > 8 GeV/c", 0.04, 42, 1);
   }
   else{
@@ -96,11 +96,11 @@ void DrawBW(TString Kind, TString USS, TString LSS)
   Double_t imlow = 0.75;
   Double_t imtop = 1.25;
   
-  TString widelocal = "kstarInjets/Data/";
+  TString widelocal = "kstarInjets/";
   TString localpath = widelocal + Kind;
 
   // Data file inputs
-  TString mainfile = "../kstar-in-jets/Result_rootfile/data_kstar_tpctofTwo.root";
+  TString mainfile = "../kstar-in-jets/Result_rootfile/tpctof_two.root";
   TFile* data = TFile::Open(mainfile);
   if(!data)   return;
 
@@ -158,15 +158,10 @@ void DrawBW(TString Kind, TString USS, TString LSS)
   TH1* hUSS_Y_BgTmp2 [nPtBins];
   TH1* hUSS_Y_ExtraBgTmp2 [nPtBins];
   TH1* hUSS_Y_kstarSigTmp2 [nPtBins];
-
-  TH1* hUSS_Y_BgTmp3 [nPtBins];
-  TH1* hUSS_Y_ExtraBgTmp3 [nPtBins];
-  TH1* hUSS_Y_kstarSigTmp3 [nPtBins];
   
   TH1* hUSS_Y_Fit [nPtBins];
   TH1* hUSS_Y_FitTmp [nPtBins];
   TH1* hUSS_Y_FitTmp2 [nPtBins];
-  TH1* hUSS_Y_FitTmp3 [nPtBins];
   
   if(Kind == "Inside"){
     for (Int_t i=0; i<nPtBins; i++)
@@ -207,10 +202,6 @@ void DrawBW(TString Kind, TString USS, TString LSS)
 	hUSS_Y_BgTmp2[i] = new TH1D(Form("hUSS_Y_BgTmp2_%i", i), Form("hUSS_Y_BgTmp2_%i", i), nBins, imlow, imtop);
 	hUSS_Y_kstarSigTmp2[i] = new TH1D(Form("hUSS_Y_kstarSigTmp2_%i", i), Form("hUSS_Y_kstarSigTmp2_%i", i), nBins, imlow, imtop);      
 	hUSS_Y_FitTmp2[i] = new TH1D(Form("hUSS_Y_FitTmp2_%i", i), Form("hUSS_Y_FitTmp2_%i", i), nBins, imlow, imtop);
-
-	hUSS_Y_BgTmp3[i] = new TH1D(Form("hUSS_Y_BgTmp3_%i", i), Form("hUSS_Y_BgTmp3_%i", i), nBins, imlow, imtop);
-	hUSS_Y_kstarSigTmp3[i] = new TH1D(Form("hUSS_Y_kstarSigTmp3_%i", i), Form("hUSS_Y_kstarSigTmp3_%i", i), nBins, imlow, imtop);      
-	hUSS_Y_FitTmp3[i] = new TH1D(Form("hUSS_Y_FitTmp3_%i", i), Form("hUSS_Y_FitTmp3_%i", i), nBins, imlow, imtop);
 	
       }
   }
@@ -250,8 +241,8 @@ void DrawBW(TString Kind, TString USS, TString LSS)
 	hLSS_Y[j]->Scale(Scale*delta);
 	hUSS_Y[j]->Scale(1.0);
       }
-      else if (Kind=="Inclusive" && j==5){
-	delta = 0.98;
+      else if (Kind=="Inclusive"){
+	delta = 1.0;
 	hLSS_Y[j]->Scale(Scale*delta);
 	hUSS_Y[j]->Scale(1.0);
       }
@@ -307,11 +298,11 @@ void DrawBW(TString Kind, TString USS, TString LSS)
 	  TLatex* txtInfoF = DrawTLatex(0.185, 0.172, Form("%.1f < #it{p}_{T}^{ K*}< %.1f GeV/#it{c}", ptlow, pthigh), 0.04, 42, 1);
 	}
 	else{
-	  TLatex* txtInfoA = DrawTLatex(0.604, 0.876, Kind+" yield", 0.04, 62, 1);
-	  TLatex* txtInfoB = DrawTLatex(0.604, 0.929, "ALICE #bf{Performance}", 0.05, 62, 1);
-	  TLatex* txtInfoC = DrawTLatex(0.604, 0.825, "pp #sqrt{s} = 13.6 TeV", 0.04, 42, 1);
-	  TLatex* txtInfoD = DrawTLatex(0.604, 0.775, "Min. Bias", 0.04, 42, 1);
-	  TLatex* txtInfoF = DrawTLatex(0.604, 0.723, Form("%.1f < #it{p}_{T}^{ K*}< %.1f GeV/#it{c}", ptlow, pthigh), 0.04, 42, 1);
+	  TLatex* txtInfoA = DrawTLatex(0.641, 0.876, Kind+" yield", 0.04, 62, 1);
+	  TLatex* txtInfoB = DrawTLatex(0.641, 0.929, "ALICE #bf{Performance}", 0.05, 62, 1);
+	  TLatex* txtInfoC = DrawTLatex(0.641, 0.825, "pp #sqrt{s} = 13.6 TeV", 0.04, 42, 1);
+	  TLatex* txtInfoD = DrawTLatex(0.641, 0.775, "Min. Bias", 0.04, 42, 1);
+	  TLatex* txtInfoF = DrawTLatex(0.641, 0.723, Form("%.1f < #it{p}_{T}^{ K*}< %.1f GeV/#it{c}", ptlow, pthigh), 0.04, 42, 1);
 	}
 
 	
@@ -350,17 +341,17 @@ void DrawBW(TString Kind, TString USS, TString LSS)
 	  TLatex* txtInfoA = DrawTLatex(0.185, 0.876, Kind+" yield", 0.04, 62, 1);
 	  TLatex* txtInfoB = DrawTLatex(0.185, 0.929, "ALICE #bf{Performance}", 0.05, 62, 1);
 	  TLatex* txtInfoC = DrawTLatex(0.185, 0.825, "pp #sqrt{s} = 13.6 TeV", 0.04, 42, 1);
-	  TLatex* txtInfoD = DrawTLatex(0.185, 0.775, "#Delta R_{ jet}^{ K*} < 0.4", 0.04, 42, 1);
+	  TLatex* txtInfoD = DrawTLatex(0.185, 0.775, "#Delta #it{R}_{ jet}^{ K*} < 0.4", 0.04, 42, 1);
 	  TLatex* txtInfoE = DrawTLatex(0.175, 0.665, "#it{p}_{T}^{ Jet ch uncorr} > 8 GeV/c", 0.04, 42, 1);
 	  TLatex* txtInfoF = DrawTLatex(0.175, 0.723, Form("%.1f < #it{p}_{T}^{ K*}< %.1f GeV/#it{c}", ptlow, pthigh), 0.04, 42, 1);
 	}
 	else{
-	  TLatex* txtInfoA = DrawTLatex(0.590, 0.876, Kind+" yield", 0.04, 62, 1);
+	  TLatex* txtInfoA = DrawTLatex(0.657, 0.876, Kind+" yield", 0.04, 62, 1);
 	  TLatex* txtInfoB = DrawTLatex(0.590, 0.929, "ALICE #bf{Performance}", 0.05, 62, 1);
-	  TLatex* txtInfoC = DrawTLatex(0.590, 0.825, "pp #sqrt{s} = 13.6 TeV", 0.04, 42, 1);
-	  TLatex* txtInfoD = DrawTLatex(0.590, 0.775, "#Delta R_{ jet}^{ K*} < 0.4", 0.04, 42, 1);
-	  TLatex* txtInfoE = DrawTLatex(0.590, 0.665, "#it{p}_{T}^{ Jet ch uncorr} > 8 GeV/c", 0.04, 42, 1);
-	  TLatex* txtInfoF = DrawTLatex(0.590, 0.723, Form("%.1f < #it{p}_{T}^{ K*}< %.1f GeV/#it{c}", ptlow, pthigh), 0.04, 42, 1);
+	  TLatex* txtInfoC = DrawTLatex(0.657, 0.825, "pp #sqrt{s} = 13.6 TeV", 0.04, 42, 1);
+	  TLatex* txtInfoD = DrawTLatex(0.657, 0.775, "#Delta #it{R}_{ jet}^{ K*} < 0.4", 0.04, 42, 1);
+	  TLatex* txtInfoE = DrawTLatex(0.657, 0.665, "#it{p}_{T}^{ Jet ch uncorr} > 8 GeV/c", 0.04, 42, 1);
+	  TLatex* txtInfoF = DrawTLatex(0.657, 0.723, Form("%.1f < #it{p}_{T}^{ K*}< %.1f GeV/#it{c}", ptlow, pthigh), 0.04, 42, 1);
 	}
 	
 	if (j==1||j==2||j==3||j==4){
@@ -427,11 +418,6 @@ void DrawBW(TString Kind, TString USS, TString LSS)
   TF1* fBgTmp2 [nPtBins];
   TF1* fFit_Tmp2 [nPtBins];
 
-  TF1* fExtraBgTmp3 [nPtBins];
-  TF1* fkstarTmp3 [nPtBins];
-  TF1* fBgTmp3 [nPtBins];
-  TF1* fFit_Tmp3 [nPtBins];
-
   // POST
   TF1* fBg_POST [nPtBins];
   TF1* fkstar_POST [nPtBins];
@@ -439,8 +425,6 @@ void DrawBW(TString Kind, TString USS, TString LSS)
   TF1* fkstarTmp_POST [nPtBins];
   TF1* fBgTmp2_POST [nPtBins];
   TF1* fkstarTmp2_POST [nPtBins];
-  TF1* fBgTmp3_POST [nPtBins];
-  TF1* fkstarTmp3_POST [nPtBins];
 
   double kstarMass = 0.89581;
   
@@ -470,10 +454,6 @@ void DrawBW(TString Kind, TString USS, TString LSS)
 	hUSS_Y_kstarSigTmp2[k]->Add(hUSS_Y_SUB[k]);
 	hUSS_Y_BgTmp2[k]->Add(hUSS_Y_SUB[k]);
 	hUSS_Y_FitTmp2[k]->Add(hUSS_Y_SUB[k]);
-
-	hUSS_Y_kstarSigTmp3[k]->Add(hUSS_Y_SUB[k]);
-	hUSS_Y_BgTmp3[k]->Add(hUSS_Y_SUB[k]);
-	hUSS_Y_FitTmp3[k]->Add(hUSS_Y_SUB[k]);
 	
 	ptlow = xBins[k];
 	pthigh = xBins[k+1];
@@ -504,15 +484,6 @@ void DrawBW(TString Kind, TString USS, TString LSS)
 	fkstarTmp2[k]->SetParameter(1, kstarMass);
 	fkstarTmp2[k]->SetParameter(2, 0.0474);
 	fFit_Tmp2[k] = new TF1(Form("FullfitTmp2_%i", k), "exp([0] + [1]*x + [2]*x*x + [3]*x*x*x) + pol4(4) + [9]*BreitWignerRelativistic(x, [10], [11])", ExtraMinRange, BgMaxRange);
-
-	//======
-	//Tmp3
-	//======
-	fBgTmp3[k] = new TF1(Form("kstar_ExtraBgTmp3_%i",k), "exp([0] + [1]*x + [2]*x*x + [3]*x*x*x)+pol4(4)", ExtraMinRange, BgMaxRange);
-	fkstarTmp3[k] = new TF1(Form("kstarTmp3_%i",k), "[0]*BreitWignerRelativistic(x, [1], [2])", kstarMinRange, kstarMaxRange);
-	fkstarTmp3[k]->SetParameter(1, kstarMass);
-	fkstarTmp3[k]->SetParameter(2, 0.0474);
-	fFit_Tmp3[k] = new TF1(Form("FullfitTmp3_%i", k), "exp([0] + [1]*x + [2]*x*x + [3]*x*x*x) + pol4(4) + [9]*BreitWignerRelativistic(x, [10], [11])", ExtraMinRange, BgMaxRange);
 	
 	if(k==6){
 	  for (int bin = hUSS_Y_Bg[k]->FindBin(0.78); bin <= hUSS_Y_Bg[k]->FindBin(1.02); bin++)
@@ -533,33 +504,9 @@ void DrawBW(TString Kind, TString USS, TString LSS)
 	  fFit[k]->SetParameter(9, fkstar[k]->GetParameter(0));
 	  fFit[k]->SetParameter(10, fkstar[k]->GetParameter(1));
 	  fFit[k]->SetParameter(11, fkstar[k]->GetParameter(2));
-
-	  //===================
-	  //Temp3 : k=1
-	  //===================
-	  for (int bin = hUSS_Y_BgTmp3[k]->FindBin(0.83); bin <= hUSS_Y_BgTmp3[k]->FindBin(1.03); bin++)
-	    hUSS_Y_BgTmp3[k]->SetBinError(bin, 0);
-	  for (int bin = hUSS_Y_kstarSigTmp3[k]->FindBin(0.78); bin <= hUSS_Y_kstarSigTmp3[k]->FindBin(0.825); bin++)
-	    hUSS_Y_kstarSigTmp3[k]->SetBinError(bin, 0);
-	  
-	  hUSS_Y_BgTmp3[k]->Fit(fBgTmp3[k], "SR0", "", ExtraMinRange, BgMaxRange);
-	  hUSS_Y_kstarSigTmp3[k]->Fit(fkstarTmp3[k], "SR0", "", ExtraMinRange, BgMaxRange);
-	
-	  fFit_Tmp3[k]->SetParameter(0, fBgTmp3[k]->GetParameter(0));
-	  fFit_Tmp3[k]->SetParameter(1, fBgTmp3[k]->GetParameter(1));
-	  fFit_Tmp3[k]->SetParameter(2, fBgTmp3[k]->GetParameter(2));
-	  fFit_Tmp3[k]->SetParameter(3, fBgTmp3[k]->GetParameter(3));
-	  fFit_Tmp3[k]->SetParameter(4, fBgTmp3[k]->GetParameter(4));
-	  fFit_Tmp3[k]->SetParameter(5, fBgTmp3[k]->GetParameter(5));
-	  fFit_Tmp3[k]->SetParameter(6, fBgTmp3[k]->GetParameter(6));
-	  fFit_Tmp3[k]->SetParameter(7, fBgTmp3[k]->GetParameter(7));
-	  fFit_Tmp3[k]->SetParameter(8, fBgTmp3[k]->GetParameter(8));
-	  fFit_Tmp3[k]->SetParameter(9, fkstarTmp3[k]->GetParameter(0));
-	  fFit_Tmp3[k]->SetParameter(10, fkstarTmp3[k]->GetParameter(1));
-	  fFit_Tmp3[k]->SetParameter(11, fkstarTmp3[k]->GetParameter(2));
 		  
 	  //===================
-	  //Temp2 : k=2 ~ k=3
+	  //Temp2 : k=1 ~ k=3
 	  //===================
 	  for (int bin = hUSS_Y_BgTmp2[k]->FindBin(0.83); bin <= hUSS_Y_BgTmp2[k]->FindBin(1.03); bin++)
 	    hUSS_Y_BgTmp2[k]->SetBinError(bin, 0);
@@ -585,7 +532,7 @@ void DrawBW(TString Kind, TString USS, TString LSS)
 	  //===================
 	  //Temp1 : 2.5 ~ 3.5
 	  //===================
-	  for (int bin = hUSS_Y_BgTmp[k]->FindBin(0.83); bin <= hUSS_Y_BgTmp[k]->FindBin(1.05); bin++)
+	  for (int bin = hUSS_Y_BgTmp[k]->FindBin(0.83); bin <= hUSS_Y_BgTmp[k]->FindBin(1.03); bin++)
 	    hUSS_Y_BgTmp[k]->SetBinError(bin, 0);
 	  
 	  hUSS_Y_BgTmp[k]->Fit(fBgTmp[k], "SR0", "", ExtraMinRange, BgMaxRange);
@@ -606,7 +553,7 @@ void DrawBW(TString Kind, TString USS, TString LSS)
 	}
 
 	else if(k==5){
-	  for (int bin = hUSS_Y_Bg[k]->FindBin(0.80); bin <= hUSS_Y_Bg[k]->FindBin(1.02); bin++)
+	  for (int bin = hUSS_Y_Bg[k]->FindBin(0.78); bin <= hUSS_Y_Bg[k]->FindBin(1.02); bin++)
 	    hUSS_Y_Bg[k]->SetBinError(bin, 0);
 	  hUSS_Y_Bg[k]->Fit(fBg[k], "SR0", "", ExtraMinRange, BgMaxRange);
 	  hUSS_Y_kstarSig[k]->Fit(fkstar[k], "SR0", "", ExtraMinRange, BgMaxRange);
@@ -625,7 +572,7 @@ void DrawBW(TString Kind, TString USS, TString LSS)
 	  fFit[k]->SetParameter(11, fkstar[k]->GetParameter(2));
 	 
 	  //===================
-	  //Temp2 : k=2 ~ k=3
+	  //Temp2 : k=1 ~ k=3
 	  //===================
 	  fFit_Tmp2[k]->SetParameter(0, fBgTmp2_POST[k+1]->GetParameter(0));
 	  fFit_Tmp2[k]->SetParameter(1, fBgTmp2_POST[k+1]->GetParameter(1));
@@ -639,22 +586,6 @@ void DrawBW(TString Kind, TString USS, TString LSS)
 	  fFit_Tmp2[k]->SetParameter(9, fkstarTmp2_POST[k+1]->GetParameter(0));
 	  fFit_Tmp2[k]->SetParameter(10, fkstarTmp2_POST[k+1]->GetParameter(1));
 	  fFit_Tmp2[k]->SetParameter(11, fkstarTmp2_POST[k+1]->GetParameter(2));
-
-	  //===================
-	  //Temp3 : k=1
-	  //===================
-	  fFit_Tmp3[k]->SetParameter(0, fBgTmp3_POST[k+1]->GetParameter(0));
-	  fFit_Tmp3[k]->SetParameter(1, fBgTmp3_POST[k+1]->GetParameter(1));
-	  fFit_Tmp3[k]->SetParameter(2, fBgTmp3_POST[k+1]->GetParameter(2));
-	  fFit_Tmp3[k]->SetParameter(3, fBgTmp3_POST[k+1]->GetParameter(3));
-	  fFit_Tmp3[k]->SetParameter(4, fBgTmp3_POST[k+1]->GetParameter(4));
-	  fFit_Tmp3[k]->SetParameter(5, fBgTmp3_POST[k+1]->GetParameter(5));
-	  fFit_Tmp3[k]->SetParameter(6, fBgTmp3_POST[k+1]->GetParameter(6));
-	  fFit_Tmp3[k]->SetParameter(7, fBgTmp3_POST[k+1]->GetParameter(7));
-	  fFit_Tmp3[k]->SetParameter(8, fBgTmp3_POST[k+1]->GetParameter(8));
-	  fFit_Tmp3[k]->SetParameter(9, fkstarTmp3_POST[k+1]->GetParameter(0));
-	  fFit_Tmp3[k]->SetParameter(10, fkstarTmp3_POST[k+1]->GetParameter(1));
-	  fFit_Tmp3[k]->SetParameter(11, fkstarTmp3_POST[k+1]->GetParameter(2));
 
 	  //===================
 	  //Temp1 : 2.5 ~ 3.5
@@ -699,19 +630,6 @@ void DrawBW(TString Kind, TString USS, TString LSS)
 	  fFit_Tmp2[k]->SetParameter(9, fkstarTmp2_POST[k+1]->GetParameter(0));
 	  fFit_Tmp2[k]->SetParameter(10, fkstarTmp2_POST[k+1]->GetParameter(1));
 	  fFit_Tmp2[k]->SetParameter(11, fkstarTmp2_POST[k+1]->GetParameter(2));
-
-	  fFit_Tmp3[k]->SetParameter(0, fBgTmp3_POST[k+1]->GetParameter(0));
-	  fFit_Tmp3[k]->SetParameter(1, fBgTmp3_POST[k+1]->GetParameter(1));
-	  fFit_Tmp3[k]->SetParameter(2, fBgTmp3_POST[k+1]->GetParameter(2));
-	  fFit_Tmp3[k]->SetParameter(3, fBgTmp3_POST[k+1]->GetParameter(3));
-	  fFit_Tmp3[k]->SetParameter(4, fBgTmp3_POST[k+1]->GetParameter(4));
-	  fFit_Tmp3[k]->SetParameter(5, fBgTmp3_POST[k+1]->GetParameter(5));
-	  fFit_Tmp3[k]->SetParameter(6, fBgTmp3_POST[k+1]->GetParameter(6));
-	  fFit_Tmp3[k]->SetParameter(7, fBgTmp3_POST[k+1]->GetParameter(7));
-	  fFit_Tmp3[k]->SetParameter(8, fBgTmp3_POST[k+1]->GetParameter(8));
-	  fFit_Tmp3[k]->SetParameter(9, fkstarTmp3_POST[k+1]->GetParameter(0));
-	  fFit_Tmp3[k]->SetParameter(10, fkstarTmp3_POST[k+1]->GetParameter(1));
-	  fFit_Tmp3[k]->SetParameter(11, fkstarTmp3_POST[k+1]->GetParameter(2));
 	}
 
 	else if(k==3){
@@ -727,34 +645,6 @@ void DrawBW(TString Kind, TString USS, TString LSS)
 	  fFit[k]->SetParameter(9, fkstarTmp2_POST[k+1]->GetParameter(0));
 	  fFit[k]->SetParameter(10, fkstarTmp2_POST[k+1]->GetParameter(1));
 	  fFit[k]->SetParameter(11, fkstarTmp2_POST[k+1]->GetParameter(2));
-
-	  fFit_Tmp3[k]->SetParameter(0, fBgTmp3_POST[k+1]->GetParameter(0));
-	  fFit_Tmp3[k]->SetParameter(1, fBgTmp3_POST[k+1]->GetParameter(1));
-	  fFit_Tmp3[k]->SetParameter(2, fBgTmp3_POST[k+1]->GetParameter(2));
-	  fFit_Tmp3[k]->SetParameter(3, fBgTmp3_POST[k+1]->GetParameter(3));
-	  fFit_Tmp3[k]->SetParameter(4, fBgTmp3_POST[k+1]->GetParameter(4));
-	  fFit_Tmp3[k]->SetParameter(5, fBgTmp3_POST[k+1]->GetParameter(5));
-	  fFit_Tmp3[k]->SetParameter(6, fBgTmp3_POST[k+1]->GetParameter(6));
-	  fFit_Tmp3[k]->SetParameter(7, fBgTmp3_POST[k+1]->GetParameter(7));
-	  fFit_Tmp3[k]->SetParameter(8, fBgTmp3_POST[k+1]->GetParameter(8));
-	  fFit_Tmp3[k]->SetParameter(9, fkstarTmp3_POST[k+1]->GetParameter(0));
-	  fFit_Tmp3[k]->SetParameter(10, fkstarTmp3_POST[k+1]->GetParameter(1));
-	  fFit_Tmp3[k]->SetParameter(11, fkstarTmp3_POST[k+1]->GetParameter(2));
-	}
-
-	else if(k==1){
-	  fFit[k]->SetParameter(0, fBgTmp3_POST[k+1]->GetParameter(0));
-	  fFit[k]->SetParameter(1, fBgTmp3_POST[k+1]->GetParameter(1));
-	  fFit[k]->SetParameter(2, fBgTmp3_POST[k+1]->GetParameter(2));
-	  fFit[k]->SetParameter(3, fBgTmp3_POST[k+1]->GetParameter(3));
-	  fFit[k]->SetParameter(4, fBgTmp3_POST[k+1]->GetParameter(4));
-	  fFit[k]->SetParameter(5, fBgTmp3_POST[k+1]->GetParameter(5));
-	  fFit[k]->SetParameter(6, fBgTmp3_POST[k+1]->GetParameter(6));
-	  fFit[k]->SetParameter(7, fBgTmp3_POST[k+1]->GetParameter(7));
-	  fFit[k]->SetParameter(8, fBgTmp3_POST[k+1]->GetParameter(8));
-	  fFit[k]->SetParameter(9, fkstarTmp3_POST[k+1]->GetParameter(0));
-	  fFit[k]->SetParameter(10, fkstarTmp3_POST[k+1]->GetParameter(1));
-	  fFit[k]->SetParameter(11, fkstarTmp3_POST[k+1]->GetParameter(2));
 	}
 	
 	else if (k==0){
@@ -793,22 +683,7 @@ void DrawBW(TString Kind, TString USS, TString LSS)
 	  fFit[k]->SetParameter(9, fkstar_POST[k+1]->GetParameter(0));
 	  fFit[k]->SetParameter(10, fkstar_POST[k+1]->GetParameter(1));
 	  fFit[k]->SetParameter(11, fkstar_POST[k+1]->GetParameter(2));
-
-	  fFit_Tmp3[k]->SetParameter(0, fBgTmp3_POST[k+1]->GetParameter(0));
-	  fFit_Tmp3[k]->SetParameter(1, fBgTmp3_POST[k+1]->GetParameter(1));
-	  fFit_Tmp3[k]->SetParameter(2, fBgTmp3_POST[k+1]->GetParameter(2));
-	  fFit_Tmp3[k]->SetParameter(3, fBgTmp3_POST[k+1]->GetParameter(3));
-	  fFit_Tmp3[k]->SetParameter(4, fBgTmp3_POST[k+1]->GetParameter(4));
-	  fFit_Tmp3[k]->SetParameter(5, fBgTmp3_POST[k+1]->GetParameter(5));
-	  fFit_Tmp3[k]->SetParameter(6, fBgTmp3_POST[k+1]->GetParameter(6));
-	  fFit_Tmp3[k]->SetParameter(7, fBgTmp3_POST[k+1]->GetParameter(7));
-	  fFit_Tmp3[k]->SetParameter(8, fBgTmp3_POST[k+1]->GetParameter(8));
-	  fFit_Tmp3[k]->SetParameter(9, fkstarTmp3_POST[k+1]->GetParameter(0));
-	  fFit_Tmp3[k]->SetParameter(10, fkstarTmp3_POST[k+1]->GetParameter(1));
-	  fFit_Tmp3[k]->SetParameter(11, fkstarTmp3_POST[k+1]->GetParameter(2));
 	}
-	hUSS_Y_FitTmp3[k]->Fit(fFit_Tmp3[k], "SR0", "", ExtraMinRange, BgMaxRange);
-	hUSS_Y_FitTmp2[k]->Fit(fFit_Tmp2[k], "SR0", "", ExtraMinRange, BgMaxRange);
 	hUSS_Y_FitTmp2[k]->Fit(fFit_Tmp2[k], "SR0", "", ExtraMinRange, BgMaxRange);
 	hUSS_Y_FitTmp[k]->Fit(fFit_Tmp[k], "SR0", "", ExtraMinRange, BgMaxRange);
 	hUSS_Y_Fit[k]->Fit(fFit[k], "SR0", "", ExtraMinRange, BgMaxRange);
@@ -868,27 +743,7 @@ void DrawBW(TString Kind, TString USS, TString LSS)
 	fkstarTmp2_POST[k] = new TF1(Form("kstar_kstarTMP2_POST_%i",k), "[0]*BreitWignerRelativistic(x, [1], [2])", ExtraMinRange, BgMaxRange);
 	fkstarTmp2_POST[k]->SetParameter(0, fFit_Tmp2[k]->GetParameter(9));
 	fkstarTmp2_POST[k]->SetParameter(1, fFit_Tmp2[k]->GetParameter(10));
-	fkstarTmp2_POST[k]->SetParameter(2, fFit_Tmp2[k]->GetParameter(11));
-
-	//=============================================================
-	//Tmp3
-	//=============================================================
-	fBgTmp3_POST[k] = new TF1(Form("kstar_ExtraBgTMP3_POST_%i",k), "exp([0] + [1]*x + [2]*x*x + [3]*x*x*x) + pol4(4)", ExtraMinRange, BgMaxRange);
-	fBgTmp3_POST[k]->SetParameter(0, fFit_Tmp3[k]->GetParameter(0));
-	fBgTmp3_POST[k]->SetParameter(1, fFit_Tmp3[k]->GetParameter(1));
-	fBgTmp3_POST[k]->SetParameter(2, fFit_Tmp3[k]->GetParameter(2));
-	fBgTmp3_POST[k]->SetParameter(3, fFit_Tmp3[k]->GetParameter(3));
-	fBgTmp3_POST[k]->SetParameter(4, fFit_Tmp3[k]->GetParameter(4));
-	fBgTmp3_POST[k]->SetParameter(5, fFit_Tmp3[k]->GetParameter(5));
-	fBgTmp3_POST[k]->SetParameter(6, fFit_Tmp3[k]->GetParameter(6));
-	fBgTmp3_POST[k]->SetParameter(7, fFit_Tmp3[k]->GetParameter(7));
-	fBgTmp3_POST[k]->SetParameter(8, fFit_Tmp3[k]->GetParameter(8));
-
-	fkstarTmp3_POST[k] = new TF1(Form("kstar_kstarTMP3_POST_%i",k), "[0]*BreitWignerRelativistic(x, [1], [2])", ExtraMinRange, BgMaxRange);
-	fkstarTmp3_POST[k]->SetParameter(0, fFit_Tmp3[k]->GetParameter(9));
-	fkstarTmp3_POST[k]->SetParameter(1, fFit_Tmp3[k]->GetParameter(10));
-	fkstarTmp3_POST[k]->SetParameter(2, fFit_Tmp3[k]->GetParameter(11));	
-
+	fkstarTmp2_POST[k]->SetParameter(2, fFit_Tmp2[k]->GetParameter(11));	
 
 	TFitResultPtr ptr = hUSS_Y_Fit[k]->Fit(fFit[k], "SR0", "", ExtraMinRange, BgMaxRange);
 	double Chi2 = ptr->Chi2();
@@ -945,7 +800,7 @@ void DrawBW(TString Kind, TString USS, TString LSS)
 	legendd->Draw("SAME");
 	
 	lines->SaveAs(Form("../kstar-in-jets/Plot/"+localpath+"/two_fit_%1.1f_%1.1f.png", ptlow, pthigh));
-	//lines->SaveAs(Form("../kstar-in-jets/Plot/"+localpath+"/two_fit_%1.1f_%1.1f.pdf", ptlow, pthigh));
+	lines->SaveAs(Form("../kstar-in-jets/Plot/"+localpath+"/two_fit_%1.1f_%1.1f.pdf", ptlow, pthigh));
 
 	//=============================================
 	// Yield Main

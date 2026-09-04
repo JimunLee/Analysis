@@ -64,10 +64,10 @@ void DrawBW()
   float imlow = 0.60;
   float imtop = 1.20;
 
-  TString localpath = "Data/Inside/MB/";
+  TString localpath = "/Users/jimun/Analysis/kstar-in-jets/Plot/kstarInjets/Data/Inside/MB/";
 
   // Data file inputs 
-  TString mainfile = "../kstar-in-jets/Results_rootfile/MB_Jets_pass1_ao_Minbias.root";
+  TString mainfile = "/Users/jimun/Analysis/kstar-in-jets/Results_rootfile/Inclusive_Jets_ao_pass1_Minbias.root";
   
   TFile* data = TFile::Open(mainfile);
   if(!data)   return;
@@ -115,7 +115,7 @@ void DrawBW()
 
       hUSS_SUB[i] = new TH1D(Form("hUSS_SUB_%i", i), Form("hUSS_SUB_%i", i), nBins, imlow, imtop);
       hLSS_SUB[i] = new TH1D(Form("hLSS_SUB_%i", i), Form("hLSS_SUB_%i", i), nBins, imlow, imtop);
-      hUSSFit[i] = new TH1D(Form("hUSSFit_%i", i), Form("hUSSFit_%i", i), nBins/5, imlow, imtop); 
+      hUSSFit[i] = new TH1D(Form("hUSSFit_%i", i), Form("hUSSFit_%i", i), nBins/ReBinNum, imlow, imtop); 
 	  
       (hUSS_KPi->GetAxis(2))->SetRangeUser(ptlow, pthigh);
       (hUSS_PiK->GetAxis(2))->SetRangeUser(ptlow, pthigh);
@@ -175,11 +175,8 @@ void DrawBW()
       hLSS[i]->SetMarkerColor(2);
       hLSS[i]->SetLineColor(2);
 
-      hUSS[i]->Rebin(5);
-      hLSS[i]->Rebin(5);
-      
-      hUSS[i]->Scale(0.2);
-      hLSS[i]->Scale(0.2);
+      hUSS[i]->Rebin(ReBinNum);
+      hLSS[i]->Rebin(ReBinNum);
 
       // 1D projection plots
       TCanvas* plots = new TCanvas(Form("plots_%d", i), "", 940, 800);
@@ -217,7 +214,7 @@ void DrawBW()
       legend->AddEntry(hLSS[i], "2#sqrt{#it{M}_{inv}^{ K^{+}#pi^{+}}*#it{M}_{inv}^{ K^{-}#pi^{-}}}", "lpf");
       legend->Draw("SAME");
 
-      plots->SaveAs(Form("../kstar-in-jets/Plot/kstarInjets/"+localpath+"proj_%1.1f_%1.1f.png", ptlow, pthigh),"RECREATE");
+      plots->SaveAs(Form(localpath+"proj_%1.1f_%1.1f.png", ptlow, pthigh),"RECREATE");
   
       // ==========================
       // Drawing Substraction
@@ -326,7 +323,7 @@ void DrawBW()
       legendd->AddEntry(pol3bg[i], "Residual bkg.", "l");
       legendd->Draw("SAME");
       
-      lines->SaveAs(Form("../kstar-in-jets/Plot/kstarInjets/"+localpath+"two_fit_%1.1f_%1.1f.png", ptlow, pthigh), "RECREATE");
+      lines->SaveAs(Form(localpath+"two_fit_%1.1f_%1.1f.png", ptlow, pthigh), "RECREATE");
       
       //=============================================
       // Yield Main
@@ -355,16 +352,16 @@ void DrawBW()
       hYield->SetBinContent(i+1, hYield->GetBinContent(i+1)/hYield->GetBinWidth(i+1));
       hYield->SetBinError(i+1, HistCorrYerr);
     
-      nEvents = hCent->GetBinContent(3); //binx=3: Inclusive(nEvents), binx=4: Has Jets(nTrigers)
+      nEvents = hCent->GetBinContent(4); //binx=3: Inclusive(nEvents), binx=4: Has Jets(nTrigers)
     }//for i
-  /* TFile* fout = TFile::Open("../kstar-in-jets/Results_draw/JetUncorrpTspectra_MB.root", "RECREATE"); */
-  /* fout->cd(); */
-  /* hCent->Write("nEvents_Jets"); */
-  /* hYield->Write("BC_Jets_spectra"); */
+  TFile* fout = TFile::Open("/Users/jimun/Analysis/kstar-in-jets/Results_draw/Uncorr_Jet.root", "RECREATE");
+  fout->cd();
+  hCent->Write("nEvents_Jets");
+  hYield->Write("BC_Jets_spectra");
   
-  /* hYield->Scale(1/nEvents); */
-  /* hYield->Write("Jets_spectra"); */
-  /* fout->Close(); */
+  hYield->Scale(1/nEvents);
+  hYield->Write("Jets_spectra");
+  fout->Close();
   
   TCanvas* numbin = new TCanvas();
   numbin->SetRightMargin(0.05);
@@ -393,5 +390,5 @@ void DrawBW()
   legenddd->Draw("SAME");
 
   numbin->SetLogy();
-  numbin->SaveAs("../kstar-in-jets/Plot/kstarInjets/"+localpath+"h_Yield_Jets.png", "RECREATE");
+  numbin->SaveAs(localpath+"h_Yield_Jets.png", "RECREATE");
 }//DrawBW

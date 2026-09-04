@@ -1,3 +1,7 @@
+//K*0 in and out of jet 
+//efficiency code
+//made by Jimun Lee
+
 #include <TH1.h>
 #include <TStyle.h>
 #include <TCanvas.h>
@@ -29,24 +33,19 @@ void eff()
   cout.precision(6);
   gStyle->SetOptStat(0);
   
-  // TString mainfile = "../kstar-in-jets/Results_rootfile/Eff_MB_hyperloop.root";
-  TString mainfile = "../kstar-in-jets/Results_rootfile/falsefalse.root";
-
+  TString mainfile = "../kstar-in-jets/Results_rootfile/signalLoss_test.root";
   TFile* data = TFile::Open(mainfile);
   if(!data)   return;
 
   const Int_t nPtBins = 11;
   Double_t xBins[nPtBins+1] = {0.0, 0.8, 1.0, 1.2, 1.4, 1.8, 2.3, 2.8, 3.4, 4.0, 5.0, 8.0};
-  // Double_t xBins[nPtBins+1] = {0.0, 0.4, 0.6, 0.8, 1.0, 1.2, 1.4, 1.8, 2.3, 2.8, 3.4, 4.0, 5.0, 8.0};
+
   int deepblue = TColor::GetColor("#167ec7");
   
   TString effRecName("kstar-in-o-o/hEffRecTest8_pT;1");
   TString effGenName("kstar-in-o-o/hEffGen_pT;1");
   TString RecEventName("kstar-in-o-o/nEvents;1");
   TString GenEventName("kstar-in-o-o/nEvents_Gen;1");
-
-  /* TString RecEventName("kstar-in-o-o/nEvents_MC;1"); */
-  /* TString GenEventName("kstar-in-o-o/nEvents_MC_True;1"); */
 
   TH1D* hRecR = new TH1D("hRecRebin", "hRecRebin", nPtBins, xBins);
   TH1D* hGenR = new TH1D("hGenRebin", "hGenRebin", nPtBins, xBins);
@@ -58,7 +57,7 @@ void eff()
   TH1D* nEvGen = (TH1D*)data->Get(GenEventName);
 
   hRec->Scale(1.0/(nEvRec->GetBinContent(3))); // the number of events of MB
-  hGen->Scale(1.0/(nEvGen->GetBinContent(3))); // nEvents of 2.5
+  hGen->Scale(1.0/(nEvGen->GetBinContent(4))); // nEvents of 3.5
 
   hRecR = (TH1D*)hRec->Rebin(nPtBins,"hRecRebin", xBins);
   hGenR = (TH1D*)hGen->Rebin(nPtBins,"hGenRebin", xBins);
@@ -71,11 +70,11 @@ void eff()
 
   hRec->GetXaxis()->SetRangeUser(0, 8);
 
-  /* TFile* fout = TFile::Open("../kstar-in-jets/Results_draw/eff_Inclusive_MB.root", "RECREATE"); */
-  /* hRecR->Write("eff_MB"); */
+  TFile* fout = TFile::Open("../kstar-in-jets/Results_draw/eff_Inclusive_MB.root", "RECREATE");
+  hRecR->Write("eff_MB");
 
-  /* fout->Write(); */
-  /* fout->Close(); */
+  fout->Write();
+  fout->Close();
   
   HistoAxisTitles(hRecR, "#it{p}_{T} [GeV/#it{c}]", "Efficiency x Acceptance", 0.04, 62, 1.0, 0.04, 62, 1.1);
   hRecR->SetLineWidth(2);
